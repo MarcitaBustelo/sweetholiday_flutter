@@ -32,6 +32,9 @@ dependencies:
     sdk: flutter
 
   http: ^0.13.6
+  shared_preferences: ^2.2.2
+  flutter_secure_storage: ^9.0.0
+  provider: ^6.1.2
 
   cupertino_icons: ^1.0.8
 
@@ -52,7 +55,9 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  assets:
+    - assets/images/Galleta_logo.png
+    - assets/images/logo.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
