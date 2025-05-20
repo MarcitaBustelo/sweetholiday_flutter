@@ -9,6 +9,9 @@ class AuthService {
   Future<Map<String, dynamic>> login(String employeeId, String password) async {
     final url = Uri.parse('$_baseUrl/loginApi');
 
+    print('🌐 Enviando login a: $url');
+    print('📦 Body: {"employee_id":"$employeeId","password":"$password"}');
+
     final response = await http.post(
       url,
       headers: {'Accept': 'application/json'},
@@ -19,30 +22,25 @@ class AuthService {
     );
 
     final data = jsonDecode(response.body);
+    print('📥 Respuesta completa: $data');
 
     if (response.statusCode == 200 && data['success'] == true) {
-      final token = data['data']['token '];
-      final user = data['data']['user']; // <-- añade esto
-
-      print('🌐 Enviando login a: $url');
-      print('📦 Body: ${jsonEncode({
-            'employee_id': employeeId,
-            'password': password,
-          })}');
+      final token = data['data']['token'];
+      final name = data['data']['name'];
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
 
       return {
         'success': true,
-        'user': user, // <-- añade esto
-        'token': token
+        'name': name,
+        'token': token,
       };
     } else {
       return {
         'success': false,
         'message': data['message'] ?? 'Login failed',
-        'errors': data['errors'] ?? {}
+        'errors': data['errors'] ?? {},
       };
     }
   }

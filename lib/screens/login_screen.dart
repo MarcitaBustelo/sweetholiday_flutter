@@ -163,9 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => isLoading = false);
 
-    if (result['success'] && result['user'] != null) {
-      final user = result['user'];
-      final name = user['name'] ?? 'Usuario'; // Por si 'name' viene null
+    if (result['success'] && result['name'] != null) {
+      final name = result['name'] ?? 'Usuario';
 
       Navigator.pushReplacementNamed(
         context,
@@ -178,7 +177,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al iniciar sesión.')),
+        SnackBar(
+            content: Text(result['message'] ?? 'Error al iniciar sesión.')),
       );
     }
   }
