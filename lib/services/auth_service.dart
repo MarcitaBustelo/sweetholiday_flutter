@@ -7,40 +7,57 @@ class AuthService {
 
   // LOGIN
   Future<Map<String, dynamic>> login(String employeeId, String password) async {
-    final url = Uri.parse('$_baseUrl/loginApi');
+    final url = Uri.parse('$_baseUrl/login');
 
-    print('🌐 Enviando login a: $url');
-    print('📦 Body: {"employee_id":"$employeeId","password":"$password"}');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Accept': 'application/json'},
+        body: {
+          'employee_id': employeeId,
+          'password': password,
+        },
+      );
 
-    final response = await http.post(
-      url,
-      headers: {'Accept': 'application/json'},
-      body: {
-        'employee_id': employeeId,
-        'password': password,
-      },
-    );
+      final data = jsonDecode(response.body);
 
-    final data = jsonDecode(response.body);
-    print('📥 Respuesta completa: $data');
+      if (response.statusCode == 200 && data['success'] == true) {
+        final token = data['data']['token'];
+        final name = data['data']['name'];
+        final employeeIdFromResponse = data['data']['employee_id'];
+        final departmentName = data['data']['department']; // <- añade esto
 
-    if (response.statusCode == 200 && data['success'] == true) {
-      final token = data['data']['token'];
-      final name = data['data']['name'];
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+        await prefs.setString('employee_id', employeeIdFromResponse);
+        await prefs.setString('department', departmentName); // <- y esto
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
-
-      return {
-        'success': true,
-        'name': name,
-        'token': token,
-      };
-    } else {
+        return {
+          'success': true,
+          'name': name,
+          'token': token,
+          'employee_id': employeeIdFromResponse,
+          'department': departmentName,
+        };
+        
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Unauthorized',
+          'errors': data['errors'] ?? {},
+        };
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Login failed',
+          'errors': data['errors'] ?? {},
+        };
+      }
+    } catch (e) {
       return {
         'success': false,
-        'message': data['message'] ?? 'Login failed',
-        'errors': data['errors'] ?? {},
+        'message': 'Something went wrong. Please try again later.',
+        'errors': {'exception': e.toString()},
       };
     }
   }
