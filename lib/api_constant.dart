@@ -1,1 +1,1 @@
-const String baseUrl = 'http://172.20.10.2:8000/api';
+const String baseUrl = 'https://sweetholidays-production-f2f2.up.railway.app/api/';
