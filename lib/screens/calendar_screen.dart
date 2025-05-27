@@ -38,7 +38,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     if (token == null) throw Exception('Token no encontrado');
 
     final response = await http.get(
-      Uri.parse('http://172.20.10.2:8000/api/user/holidays'),
+      Uri.parse('https://sweetholidays-production-f2f2.up.railway.app/api/user/holidays'),
       headers: {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',

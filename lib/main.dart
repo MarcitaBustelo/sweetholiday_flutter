@@ -7,6 +7,8 @@ import 'screens/calendar_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/request_absence_screen.dart';
 import 'screens/punch_in_screen.dart';
+import 'screens/scan_screen.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +59,9 @@ class MyApp extends StatelessWidget {
                 builder: (_) => const RequestAbsenceScreen());
           case '/punch':
             return MaterialPageRoute(builder: (_) => const PunchInScreen());
+          case '/scan':
+            return MaterialPageRoute(builder: (_) => const ScanScreen());
+
           default:
             return MaterialPageRoute(builder: (_) => const LoginScreen());
         }

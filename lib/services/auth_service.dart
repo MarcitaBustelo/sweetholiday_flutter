@@ -3,12 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String _baseUrl = 'http://172.20.10.2:8000/api';
+  final String _baseUrl = 'https://sweetholidays-production-f2f2.up.railway.app/api';
   //https://sweetholidays-production-f2f2.up.railway.app/api/
 
   // LOGIN
   Future<Map<String, dynamic>> login(String employeeId, String password) async {
-    final url = Uri.parse('$_baseUrl/login');
+    final url = Uri.parse('$_baseUrl/loginApi');
 
     try {
       final response = await http.post(

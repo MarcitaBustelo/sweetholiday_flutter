@@ -165,12 +165,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (result['success'] && result['name'] != null) {
       final name = result['name'] ?? 'Usuario';
+      final department = result['department'] ?? '';
 
-      Navigator.pushReplacementNamed(
-        context,
-        '/menu',
-        arguments: {'name': name},
-      );
+      if (department.toLowerCase() == 'scanner') {
+        Navigator.pushReplacementNamed(context, '/scan');
+      } else {
+        Navigator.pushReplacementNamed(
+          context,
+          '/menu',
+          arguments: {'name': name},
+        );
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login successful!')),
@@ -178,7 +183,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(result['message'] ?? 'Error al iniciar sesión.')),
+          content: Text(result['message'] ?? 'Error al iniciar sesión.'),
+        ),
       );
     }
   }

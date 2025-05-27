@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_profile.dart';
 
 class UserService {
-  final String _baseUrl = 'http://172.20.10.2:8000/api';
+  final String _baseUrl = 'https://sweetholidays-production-f2f2.up.railway.app/api';
   //https://sweetholidays-production-f2f2.up.railway.app/api/
 
   Future<String?> _getToken() async {
