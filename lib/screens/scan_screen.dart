@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -19,13 +20,7 @@ class _ScanScreenState extends State<ScanScreen> {
     facing: CameraFacing.back,
   );
 
-  final String baseUrl =
-      'https://sweetholidays-production-f2f2.up.railway.app/api'; // 🔁 CAMBIA esto a tu URL real
-  final Map<String, String> headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    // Añade token si usas autenticación
-  };
+  final String baseUrl = 'https://sweetholidays-production-f2f2.up.railway.app/api';
 
   @override
   void initState() {
@@ -52,23 +47,34 @@ class _ScanScreenState extends State<ScanScreen> {
     });
   }
 
-  Future<void> _scanArrival(String employeeId) async {
+  Future<void> _scanArrival(String scannedEmployeeId) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception('⚠️ No token found. Please log in again.');
+      }
+
       final response = await http.post(
         Uri.parse('$baseUrl/user/scan-qr'),
-        headers: headers,
-        body: jsonEncode({'employee_id': employeeId}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'employee_id': scannedEmployeeId}),
       );
 
       final data = jsonDecode(response.body);
 
       String message;
       if (response.statusCode == 201) {
-        message = '✅ Llegada registrada correctamente.';
+        message = '✅ Arrival registered successfully.';
       } else if (response.statusCode == 200) {
-        message = '✅ Salida registrada correctamente.';
+        message = '✅ Departure registered successfully.';
       } else {
-        message = data['message'] ?? 'Error inesperado.';
+        message = data['message'] ?? 'Unexpected error occurred.';
       }
 
       if (!mounted) return;
@@ -78,23 +84,38 @@ class _ScanScreenState extends State<ScanScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al registrar: $e')),
+        SnackBar(content: Text('Error while trying to register: $e')),
       );
     }
+  }
+
+  Future<void> _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    if (!mounted) return;
+
+    Navigator.of(context).pushReplacementNamed('login');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scan QR code'),
+        title: const Text('Scan QR Code'),
         backgroundColor: const Color(0xFF5C1E8A),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Logout',
+          onPressed: _logout,
+        ),
       ),
       body: !_hasPermission
           ? const Center(
-              child:
-                  Text('Camera permit denied', style: TextStyle(fontSize: 16)),
+              child: Text(
+                'Camera permit denied',
+                style: TextStyle(fontSize: 16),
+              ),
             )
           : Stack(
               children: [
@@ -103,11 +124,9 @@ class _ScanScreenState extends State<ScanScreen> {
                   onDetect: (BarcodeCapture capture) async {
                     final code = capture.barcodes.first.rawValue;
                     if (code != null && code != scannedCode) {
-                      _controller.stop(); // Pausa escáner temporalmente
+                      _controller.stop();
                       setState(() => scannedCode = code);
                       await _scanArrival(code);
-                      await Future.delayed(const Duration(seconds: 2));
-                      _controller.start(); // Reanuda escáner si quieres
                     }
                   },
                 ),
@@ -122,11 +141,28 @@ class _ScanScreenState extends State<ScanScreen> {
                         color: Colors.black54,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(
-                        'Scanned: $scannedCode',
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 16),
-                        textAlign: TextAlign.center,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Escaneado: $scannedCode',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                scannedCode = null;
+                              });
+                              _controller.start(); 
+                            },
+                            child: const Text('Reset to Scan Another QR code'),
+                          ),
+                        ],
                       ),
                     ),
                   ),
