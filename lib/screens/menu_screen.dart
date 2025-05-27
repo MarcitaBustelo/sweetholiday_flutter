@@ -26,16 +26,17 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOutQuart));
+    ).animate(
+        CurvedAnimation(parent: _slideController, curve: Curves.easeOutQuart));
 
     _fadeController.forward();
     _slideController.forward();
@@ -52,8 +53,12 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final hour = now.hour;
-    String greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
-    
+    String greeting = hour < 12
+        ? "Good Morning"
+        : hour < 18
+            ? "Good Afternoon"
+            : "Good Evening";
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -193,6 +198,9 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
             case 'punch':
               Navigator.pushNamed(context, '/punch');
               break;
+            case 'changePassword':
+              Navigator.pushNamed(context, '/change-password');
+              break;
             case 'logout':
               Navigator.pushReplacementNamed(context, '/login');
               break;
@@ -200,17 +208,25 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
         },
         itemBuilder: (context) => [
           _buildPopupMenuItem(Icons.person_outline, 'Profile', 'profile'),
-          _buildPopupMenuItem(Icons.calendar_today_outlined, 'See Calendar', 'calendar'),
-          _buildPopupMenuItem(Icons.email_outlined, 'Request Absence', 'request'),
-          _buildPopupMenuItem(Icons.qr_code_scanner_outlined, 'Punch In', 'punch'),
+          _buildPopupMenuItem(
+              Icons.calendar_today_outlined, 'See Calendar', 'calendar'),
+          _buildPopupMenuItem(
+              Icons.email_outlined, 'Request Absence', 'request'),
+          _buildPopupMenuItem(
+              Icons.qr_code_scanner_outlined, 'Punch In', 'punch'),
+          _buildPopupMenuItem(
+              Icons.password_outlined, 'Change Password', 'changePassword'),
           const PopupMenuDivider(),
-          _buildPopupMenuItem(Icons.logout_outlined, 'Logout', 'logout', isLogout: true),
+          _buildPopupMenuItem(Icons.logout_outlined, 'Logout', 'logout',
+              isLogout: true),
         ],
       ),
     );
   }
 
-  PopupMenuItem<String> _buildPopupMenuItem(IconData icon, String text, String value, {bool isLogout = false}) {
+  PopupMenuItem<String> _buildPopupMenuItem(
+      IconData icon, String text, String value,
+      {bool isLogout = false}) {
     return PopupMenuItem(
       value: value,
       child: Container(
@@ -387,10 +403,22 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
 
   Widget _buildMenuGrid() {
     final menuItems = [
-      MenuItemData(Icons.calendar_today_outlined, 'See Calendar', 'View your absences and schedule', '/calendar', const Color(0xFF4CAF50)),
-      MenuItemData(Icons.person_outline, 'Profile', 'Manage your personal info', '/profile', const Color(0xFF2196F3)),
-      MenuItemData(Icons.email_outlined, 'Request Absence', 'Submit vacation requests', '/request-absence', const Color(0xFFFF9800)),
-      MenuItemData(Icons.qr_code_scanner_outlined, 'Punch In', 'Scan QR to clock in/out', '/punch', const Color(0xFF9C27B0)),
+      MenuItemData(
+          Icons.calendar_today_outlined,
+          'See Calendar',
+          'View your absences and schedule',
+          '/calendar',
+          const Color(0xFF4CAF50)),
+      MenuItemData(Icons.person_outline, 'Profile', 'Manage your personal info',
+          '/profile', const Color(0xFF2196F3)),
+      MenuItemData(
+          Icons.email_outlined,
+          'Request Absence',
+          'Submit vacation requests',
+          '/request-absence',
+          const Color(0xFFFF9800)),
+      MenuItemData(Icons.qr_code_scanner_outlined, 'Punch In',
+          'Scan QR to clock in/out', '/punch', const Color(0xFF9C27B0)),
     ];
 
     // Usamos un Column con Wrap en lugar de GridView para mejor control del espacio
@@ -422,7 +450,8 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
                   child: i + 1 < menuItems.length
                       ? TweenAnimationBuilder<double>(
                           tween: Tween(begin: 0, end: 1),
-                          duration: Duration(milliseconds: 600 + ((i + 1) * 150)),
+                          duration:
+                              Duration(milliseconds: 600 + ((i + 1) * 150)),
                           builder: (context, value, child) {
                             return Transform.scale(
                               scale: value,

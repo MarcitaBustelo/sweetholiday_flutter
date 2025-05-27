@@ -8,7 +8,7 @@ import 'screens/profile_screen.dart';
 import 'screens/request_absence_screen.dart';
 import 'screens/punch_in_screen.dart';
 import 'screens/scan_screen.dart';
-
+import 'screens/change_password_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +61,8 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const PunchInScreen());
           case '/scan':
             return MaterialPageRoute(builder: (_) => const ScanScreen());
-
+          case '/change-password':
+            return MaterialPageRoute(builder: (_) => const ChangePasswordScreen());
           default:
             return MaterialPageRoute(builder: (_) => const LoginScreen());
         }

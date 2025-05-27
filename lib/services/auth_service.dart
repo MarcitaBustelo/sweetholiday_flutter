@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String _baseUrl = 'https://sweetholidays-production-f2f2.up.railway.app/api';
+  final String _baseUrl =
+      'https://sweetholidays-production-f2f2.up.railway.app/api';
   //https://sweetholidays-production-f2f2.up.railway.app/api/
 
   // LOGIN
@@ -40,7 +41,6 @@ class AuthService {
           'employee_id': employeeIdFromResponse,
           'department': departmentName,
         };
-        
       } else if (response.statusCode == 401 || response.statusCode == 403) {
         return {
           'success': false,
@@ -133,5 +133,62 @@ class AuthService {
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
+  }
+
+  // CAMBIAR CONTRASEÑA
+  Future<Map<String, dynamic>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      return {
+        'success': false,
+        'message': 'No token found. Please log in again.',
+      };
+    }
+
+    final url = Uri.parse('$_baseUrl/reset-password');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: {
+          'current_password': currentPassword,
+          'new_password': newPassword,
+          'new_password_confirmation': confirmPassword,
+        },
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Password changed successfully!',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Password change failed.',
+          'errors': (data['errors'] is Map)
+              ? Map<String, dynamic>.from(data['errors'])
+              : {},
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'An error occurred. Please try again.',
+        'errors': {'exception': e.toString()},
+      };
+    }
   }
 }
