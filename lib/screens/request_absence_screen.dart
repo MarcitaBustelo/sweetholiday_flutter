@@ -47,7 +47,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
             children: [
               Icon(Icons.error_outline, color: Colors.white),
               const SizedBox(width: 12),
-              const Text('Error al cargar información del usuario'),
+              const Text('Error loading user profile'),
             ],
           ),
           backgroundColor: Colors.red[600],
@@ -130,7 +130,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
             children: [
               Icon(Icons.info_outline, color: Colors.white),
               const SizedBox(width: 12),
-              const Text('Por favor complete todos los campos'),
+              const Text('Please fill all fields correctly'),
             ],
           ),
           backgroundColor: Colors.blue[600],
@@ -157,7 +157,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
               children: [
                 Icon(Icons.check_circle_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                const Text('Solicitud enviada exitosamente'),
+                const Text('Request sent successfully!'),
               ],
             ),
             backgroundColor: Colors.green[600],
@@ -173,7 +173,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
               children: [
                 Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Text(result['message'] ?? 'Error en la solicitud'),
+                Text(result['message'] ?? 'Error while sending request'),
               ],
             ),
             backgroundColor: Colors.red[600],
@@ -189,7 +189,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
             children: [
               Icon(Icons.error_outline, color: Colors.white),
               const SizedBox(width: 12),
-              const Text('Algo salió mal. Intente nuevamente.'),
+              const Text('Something went wrong, please try again later'),
             ],
           ),
           backgroundColor: Colors.red[600],
@@ -387,7 +387,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
                                     controller: _reasonController,
                                     maxLines: 4,
                                     validator: (value) => value == null || value.isEmpty
-                                        ? 'Este campo es obligatorio'
+                                        ? 'This field is required'
                                         : null,
                                     decoration: InputDecoration(
                                       hintText: 'Describe the reason of the absence...',
@@ -497,7 +497,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            'Total de días: ${_calculateDays()}',
+                                            'Total days: ${_calculateDays()}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               color: Color(0xFF2D3748),
