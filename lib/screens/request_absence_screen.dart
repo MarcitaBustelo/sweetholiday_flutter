@@ -97,7 +97,7 @@ class _RequestAbsenceScreenState extends State<RequestAbsenceScreen>
                   children: [
                     Icon(Icons.warning_outlined, color: Colors.white),
                     const SizedBox(width: 12),
-                    const Text('La fecha de fin debe ser posterior a la de inicio'),
+                    const Text('End date cannot be before start date'),
                   ],
                 ),
                 backgroundColor: Colors.orange[600],
