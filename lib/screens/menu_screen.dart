@@ -285,7 +285,7 @@ class _MenuScreenState extends State<MenuScreen> with TickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '$greeting, ${widget.name}!',
+          '$greeting !',
           style: const TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w800,

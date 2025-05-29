@@ -186,8 +186,8 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _buildModernDaysStat(
-                              'Used Days', 
-                              profile.totalDaysUsed, 
+                              'Vacation Days Used', 
+                              profile.vacationDaysUsed, 
                               const Color(0xFFFF6B6B), 
                               Icons.schedule_outlined
                             ),

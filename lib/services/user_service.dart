@@ -68,7 +68,6 @@ class UserService {
       final data = jsonDecode(response.body);
       return UserProfile.fromJson(data);
     } else {
-      print('Error ${response.statusCode}: ${response.body}');
       throw Exception('Error al cargar perfil');
     }
   }

@@ -39,7 +39,7 @@ class UserProfile {
       remainingDays: user['remaining_days'],
       vacationDaysUsed: json['data']['vacation_days_used'],
       absenceDaysUsed: json['data']['absence_days_used'],
-      totalDaysUsed: json['data']['total_days_used'],
+      totalDaysUsed: json['data']['vacation_days_used'],
       upcomingHolidays: holidays.map((h) => Holiday.fromJson(h)).toList(),
     );
   }
